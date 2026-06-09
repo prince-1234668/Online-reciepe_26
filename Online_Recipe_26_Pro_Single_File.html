@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Online Recipe_26 Pro</title>
+<style>
+:root{--p:#ff6b35;--bg:#f5f5f5;--card:#fff;--txt:#222}
+.dark{--bg:#121212;--card:#1e1e1e;--txt:#eee}
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+body{background:var(--bg);color:var(--txt)}
+header{background:linear-gradient(135deg,#ff6b35,#ff9f1c);color:#fff;padding:30px;text-align:center}
+nav{display:flex;gap:15px;justify-content:center;padding:12px;background:var(--card);position:sticky;top:0}
+button{cursor:pointer}
+.container{max-width:1200px;margin:auto;padding:20px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+input,select,textarea{padding:10px;border:1px solid #ccc;border-radius:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.card{background:var(--card);padding:15px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.card h3{margin:10px 0}
+.badge{background:var(--p);color:#fff;padding:4px 8px;border-radius:20px;font-size:12px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6)}
+.modal-content{background:var(--card);max-width:600px;margin:5% auto;padding:20px;border-radius:12px}
+.hero{text-align:center;padding:40px}
+.hero h1{font-size:3rem}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+footer{text-align:center;padding:20px}
+</style>
+</head>
+<body>
+<header>
+<h1>🍳 Online Recipe_26 Pro</h1>
+<p>Single File Advanced Recipe Website</p>
+</header>
+
+<nav>
+<button onclick="toggleDark()">🌙 Dark Mode</button>
+<button onclick="showLogin()">Login</button>
+<button onclick="showAddRecipe()">Add Recipe</button>
+</nav>
+
+<div class="container">
+<div class="hero">
+<h1>Discover Recipes</h1>
+<p>Search, favorite, rate and manage recipes.</p>
+</div>
+
+<div class="controls">
+<input id="search" placeholder="Search recipes...">
+<select id="category">
+<option value="">All Categories</option>
+<option>Breakfast</option>
+<option>Lunch</option>
+<option>Dinner</option>
+<option>Dessert</option>
+</select>
+</div>
+
+<div id="recipes" class="grid"></div>
+</div>
+
+<div class="modal" id="loginModal">
+<div class="modal-content">
+<h2>Login</h2>
+<input placeholder="Email"><br><br>
+<input type="password" placeholder="Password"><br><br>
+<button onclick="closeModal()">Login</button>
+</div>
+</div>
+
+<div class="modal" id="recipeModal">
+<div class="modal-content">
+<h2>Add Recipe</h2>
+<input id="rname" placeholder="Recipe Name"><br><br>
+<select id="rcat">
+<option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Dessert</option>
+</select><br><br>
+<textarea id="rdesc" placeholder="Description"></textarea><br><br>
+<button onclick="addRecipe()">Save Recipe</button>
+</div>
+</div>
+
+<footer>© 2026 Online Recipe_26 Pro</footer>
+
+<script>
+let recipes=[
+{name:"Pancakes",cat:"Breakfast",desc:"Fluffy pancakes",fav:false,rating:4},
+{name:"Pizza",cat:"Dinner",desc:"Cheesy pizza",fav:false,rating:5},
+{name:"Chocolate Cake",cat:"Dessert",desc:"Rich chocolate cake",fav:false,rating:5}
+];
+
+function render(){
+let s=document.getElementById('search').value.toLowerCase();
+let c=document.getElementById('category').value;
+let box=document.getElementById('recipes');
+box.innerHTML='';
+recipes.filter(r=>(!c||r.cat===c)&&r.name.toLowerCase().includes(s))
+.forEach((r,i)=>{
+box.innerHTML+=`
+<div class="card">
+<span class="badge">${r.cat}</span>
+<h3>${r.name}</h3>
+<p>${r.desc}</p>
+<p>⭐ ${r.rating}/5</p>
+<div class="actions">
+<button onclick="fav(${i})">${r.fav?'❤️':'🤍'} Favorite</button>
+<button onclick="rate(${i})">Rate +1</button>
+</div>
+</div>`;
+});
+}
+function fav(i){recipes[i].fav=!recipes[i].fav;render();}
+function rate(i){if(recipes[i].rating<5)recipes[i].rating++;render();}
+function toggleDark(){document.body.classList.toggle('dark');}
+function showLogin(){document.getElementById('loginModal').style.display='block';}
+function showAddRecipe(){document.getElementById('recipeModal').style.display='block';}
+function closeModal(){document.querySelectorAll('.modal').forEach(m=>m.style.display='none');}
+function addRecipe(){
+recipes.push({
+name:rname.value,
+cat:rcat.value,
+desc:rdesc.value,
+fav:false,
+rating:1
+});
+closeModal();
+render();
+}
+search.oninput=render;
+category.onchange=render;
+render();
+</script>
+</body>
+</html>
